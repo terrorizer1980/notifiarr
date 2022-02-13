@@ -88,6 +88,8 @@ func (c *Client) start() error { //nolint:cyclop
 	msg, newCon, err := c.loadConfiguration()
 
 	switch {
+	case c.Flags.AptHook:
+		return c.handleAptHook() // err?
 	case c.Flags.Write != "" && (err == nil || strings.Contains(err.Error(), "ip:port")):
 		c.Printf("==> %s", msg)
 		return c.forceWriteWithExit(c.Flags.Write)
@@ -327,9 +329,7 @@ func (c *Client) reloadConfiguration(source string) error {
 
 	// start over.
 	c.Config = configfile.NewConfig(c.Logger)
-
-	c.website, err = c.Config.Get(c.Flags)
-	if err != nil {
+	if c.website, err = c.Config.Get(c.Flags); err != nil {
 		return fmt.Errorf("getting configuration: %w", err)
 	}
 
