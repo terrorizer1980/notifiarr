@@ -16,6 +16,7 @@ import (
 // handleAptHook takes a payload as stdin from dpkg and relays it to notifiarr.com.
 // only useful as an apt integration on Debian-based operating systems.
 // NEVER return an error, we don't want to hang up apt.
+//nolint:forbidigo
 func (c *Client) handleAptHook() error {
 	if !c.Config.EnableApt {
 		return nil // apt integration is not enabled, bail.
@@ -49,6 +50,7 @@ func (c *Client) handleAptHook() error {
 			fallthrough
 		default: /* debug /**/
 			// fmt.Println("hook line", line)
+			continue // avoid wsl lint error.
 		}
 	}
 
